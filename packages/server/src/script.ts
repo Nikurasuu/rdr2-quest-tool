@@ -5,24 +5,32 @@ const port = 3001;
 import { QuestStore } from './store/Quest';
 
 const store = new QuestStore();
-const quest = {name: 'dummyName', description: 'dummyDescription', id: "1"};
-store.addQuest(quest);;
 
 app.get('/quests', (req, res) => {
     console.log("quests called");
     res.send(store.quests);
     });
 
-app.get('/activeQuest', (req, res) => {
-    console.log("activeQuest called");
-    res.send(store.activeQuest);
-    });
-
 app.post('/addQuest', (req, res) => {
-    const quest = {name: req.query.questName as string, description: req.query.questDescription as string, id: req.query.questId as string};
+    const quest = {name: req.query.questName as string, description: req.query.questDescription as string, id: req.query.questId};
     store.addQuest(quest);
     console.log("Added quest: ", quest);
-    res.send(quest);
+    res.sendStatus(200);
+    });
+
+app.post('/deleteQuest', (req, res) => {
+    const id = Number(req.query.questId);
+    store.deleteQuest(id);
+    console.log("Deleted quest: ", id);
+    res.sendStatus(200);
+    });
+
+app.post('/editQuest', (req, res) => {
+    const id = Number(req.query.questId);
+    const newQuest = {name: req.query.questName as string, description: req.query.questDescription as string, id: id};
+    store.editQuest(id, newQuest);
+    console.log("Edited quest: ", newQuest);
+    res.sendStatus(200);
     });
 
 app.listen(port, () => {
