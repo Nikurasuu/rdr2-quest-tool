@@ -2,11 +2,20 @@ export class QuestStore {
     quests: any[] = [];
     activeQuest: { id: any; } = null;
 
-    addQuest = (quest: { name: string; description: string; id?: string; }) => {
+    addQuest = (quest: { name: string; description: string; id?: any; }) => {
+        if (quest.id === undefined){
+            const lastId = this.quests[this.quests.length - 1]?.id;
+            if (lastId === undefined){
+                quest.id = 1;
+            }
+            else{
+                quest.id = lastId + 1;
+            }
+        }
         this.quests.push(quest);
     }
 
-    deleteQuest = (id: number) => {
+    deleteQuest = (id: any) => {
         this.quests = this.quests.filter((quest) => {
             return quest.id !== id
         });
@@ -29,7 +38,7 @@ export class QuestStore {
         }
     }
 
-    setActiveQuest = (id: number) => {
+    setActiveQuest = (id: any) => {
         if (id === null){
             this.activeQuest = null;
             return;
