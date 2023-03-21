@@ -1,11 +1,11 @@
 import express from 'express';
 const app = express();
-const port = 3000;
+const port = 3001;
 
-import { QuestStore } from './store/Quest2';
+import { QuestStore } from './store/Quest';
 
 const store = new QuestStore();
-const quest = {name: 'dummyName', description: 'dummyDescription', id: 1};
+const quest = {name: 'dummyName', description: 'dummyDescription', id: "1"};
 store.addQuest(quest);;
 
 app.get('/quests', (req, res) => {
@@ -19,7 +19,7 @@ app.get('/activeQuest', (req, res) => {
     });
 
 app.post('/addQuest', (req, res) => {
-    const quest = {name: req.query.questName, description: req.query.questDescription, id: req.query.questId};
+    const quest = {name: req.query.questName as string, description: req.query.questDescription as string, id: req.query.questId as string};
     store.addQuest(quest);
     console.log("Added quest: ", quest);
     res.send(quest);

@@ -2,7 +2,7 @@ export class QuestStore {
     quests: any[] = [];
     activeQuest: { id: any; } = null;
 
-    addQuest = (quest: { name: string; description: string; id?: number; }) => {
+    addQuest = (quest: { name: string; description: string; id?: string; }) => {
         this.quests.push(quest);
     }
 
