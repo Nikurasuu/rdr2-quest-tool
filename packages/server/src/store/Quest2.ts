@@ -10,7 +10,7 @@ export class QuestStore {
         return Array.from(this._quests.values())
     }
 
-    addQuest = (quest: { name?: string; description?: string; id?: any; }) => {
+    addQuest = (quest: { name?: any; description?: any; id?: any; }) => {
         this._quests.set(quest.id, quest);
     }
 
