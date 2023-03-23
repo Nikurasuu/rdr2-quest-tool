@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { 
     Grid, Card, CardActions, CardContent, Button, 
     Dialog, DialogActions, DialogContent, DialogContentText, 
@@ -18,6 +18,21 @@ function QuestContainer() {
     const [openNotSelectedAlert, setOpenNotSelectedAlert] = React.useState(false);
     const [openEditDialog, setOpenEditDialog] = React.useState(false);
 
+    useEffect(() => {
+        fetch(`http://localhost:3001/quests`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+         .then((response) => response.json())
+         .then((data) => {
+                setQuests(data);
+                console.log("fetched quests");
+            });
+    }, []);
+
+    
     const handleDeleteDialog = () => {
         setOpenDeleteDialog(!openDeleteDialog);
     };

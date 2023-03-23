@@ -6,6 +6,8 @@ import { QuestStore } from './store/Quest';
 
 const store = new QuestStore();
 
+store.addQuest({name: "Quest 1", description: "Description 1"});
+
 app.get('/quests', (req, res) => {
     console.log("quests called");
     res.send(store.quests);

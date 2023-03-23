@@ -853,6 +853,7 @@
     "build": "concurrently -n \"frontend,server\" \"npm run build --workspace=frontend\" \"npm run build --workspace=server\"",
     "start": "concurrently -n \"frontend,server\" \"npm run start --workspace=frontend\" \"npm run start --workspace=server\"",
     "backend": "npm run start --workspace=server",
+    "frontend": "npm run start --workspace=frontend",
     "test": "CI=true concurrently -n \"frontend,server\" \"npm run test --workspace=frontend\" \"npm run test --workspace=server\""
   },
   "version": "1.0.0",
