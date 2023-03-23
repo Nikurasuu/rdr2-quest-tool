@@ -4,6 +4,9 @@ const port = 3001;
 
 import { QuestStore } from './store/Quest';
 
+import bodyParser from 'body-parser';
+app.use(bodyParser.json());
+
 const store = new QuestStore();
 
 store.addQuest({name: "Quest 1", description: "Description 1"});
@@ -14,10 +17,11 @@ app.get('/quests', (req, res) => {
     });
 
 app.post('/addQuest', (req, res) => {
-    const quest = {name: req.query.questName as string, description: req.query.questDescription as string, id: req.query.questId};
-    store.addQuest(quest);
-    console.log("Added quest: ", quest);
-    res.sendStatus(200);
+    const body = req.body;
+    console.log("addQuest called with body: ", body);
+    store.addQuest(body);
+    console.log("New Quest got Id: ", store.quests[store.quests.length - 1].id);
+    res.send(store.quests[store.quests.length - 1]);
     });
 
 app.post('/deleteQuest', (req, res) => {
@@ -28,8 +32,8 @@ app.post('/deleteQuest', (req, res) => {
     });
 
 app.post('/editQuest', (req, res) => {
-    const id = Number(req.query.questId);
-    const newQuest = {name: req.query.questName as string, description: req.query.questDescription as string, id: id};
+    const id = Number(req.body.id);
+    const newQuest = req.body;
     store.editQuest(id, newQuest);
     console.log("Edited quest: ", newQuest);
     res.sendStatus(200);

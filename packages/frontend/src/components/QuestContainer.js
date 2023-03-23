@@ -18,7 +18,7 @@ function QuestContainer() {
     const [openNotSelectedAlert, setOpenNotSelectedAlert] = React.useState(false);
     const [openEditDialog, setOpenEditDialog] = React.useState(false);
 
-    useEffect(() => {
+    function fetchQuests() {
         fetch(`http://localhost:3001/quests`, {
             method: 'GET',
             headers: {
@@ -28,8 +28,11 @@ function QuestContainer() {
          .then((response) => response.json())
          .then((data) => {
                 setQuests(data);
-                console.log("fetched quests");
-            });
+        });
+    }
+
+    useEffect(() => {
+        fetchQuests();
     }, []);
 
     
@@ -66,48 +69,45 @@ function QuestContainer() {
     };
 
     const handleNewQuest = (newQuest) => {
-        let questExists = false;
-        let newQuests = quests.map((quest) => {
-            if (quest.id === newQuest.id) {
-                questExists = true;
-                return newQuest;
-            }
-            return quest;
-        });
-        if (questExists) {
-            setQuests(newQuests);
-            setActiveQuest(null);
-            return;
+        if (newQuest.id === quests.length + 1) {
+            fetch(`http://localhost:3001/addQuest`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(newQuest),
+            });
+        } else {
+            fetch(`http://localhost:3001/editQuest`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(newQuest),
+            });
         }
-        setQuests([...quests, newQuest]);
+        fetchQuests();
         setActiveQuest(null);
     };
 
     const addQuest = () => {
-        let lastId;
-        if (quests.length === 0) {
-            lastId = 0;
-        } else {
-            lastId = quests[quests.length - 1].id;
-        }
-        const tempQuest = {
-            id: lastId + 1,
+        let tempQuest = {
+            id: quests.length + 1,
             name: "",
             description: "",
-            type: "",
-            location: "",
-            reward: ""
         };
         setActiveQuest(tempQuest);
         handleEditDialog();
     };
 
     const deleteQuest = () => {
-        if (!activeQuest) {
-            return;
-        }
-        let newQuests = quests.filter((quest) => quest.id !== activeQuest.id);
-        setQuests(newQuests);
+        fetch(`http://localhost:3001/deleteQuest?questId=${activeQuest.id}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        fetchQuests();
         setActiveQuest(null);
         setOpenDeleteDialog(false);
     };
