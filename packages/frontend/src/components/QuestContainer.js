@@ -8,27 +8,41 @@ import QuestList from "./QuestList";
 import QuestDetails from "./QuestDetails";
 import EditQuestDialog from "./EditQuestDialog";
 
-let quest = [];
+const server = "localhost:3001";
+//const server = process?.env?.QUESTS_ENDPOINT ||  "localhost:3001";
+
+async function questsEndpoint(method, body, id) {
+    if(id === undefined) id = "";
+    const response = await fetch(`http://${server}/quests/${id}`, {
+        method: method,
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+    }).then((response) => response.json());
+    return response;
+}
 
 function QuestContainer() {
 
-    const [quests, setQuests] = React.useState(quest);
+    const [quests, setQuests] = React.useState([]);
     const [activeQuest, setActiveQuest] = React.useState(null);
     const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
     const [openNotSelectedAlert, setOpenNotSelectedAlert] = React.useState(false);
     const [openEditDialog, setOpenEditDialog] = React.useState(false);
 
-    function fetchQuests() {
-        fetch(`http://localhost:3001/quests`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        })
-         .then((response) => response.json())
-         .then((data) => {
-                setQuests(data);
-        });
+    async function fetchQuests() {
+        try {
+            const data = await fetch(`http://localhost:3001/quests`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            }).then((response) => response.json())
+            setQuests(data);        
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     useEffect(() => {
@@ -68,31 +82,21 @@ function QuestContainer() {
         return true;
     };
 
-    const handleNewQuest = (newQuest) => {
-        if (newQuest.id === quests.length + 1) {
-            fetch(`http://localhost:3001/addQuest`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(newQuest),
-            });
+    const handleNewQuest = async (newQuest) => {
+        if (newQuest.id === undefined) {
+            await questsEndpoint("POST", newQuest);
         } else {
-            fetch(`http://localhost:3001/editQuest`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(newQuest),
-            });
+            await questsEndpoint("PUT", newQuest, newQuest.id);
         }
-        fetchQuests();
+        const newQuests = await questsEndpoint("GET");
+        setQuests(newQuests);
+        handleEditDialog();
         setActiveQuest(null);
     };
 
     const addQuest = () => {
         let tempQuest = {
-            id: quests.length + 1,
+            id: undefined,
             name: "",
             description: "",
         };
@@ -100,14 +104,10 @@ function QuestContainer() {
         handleEditDialog();
     };
 
-    const deleteQuest = () => {
-        fetch(`http://localhost:3001/deleteQuest?questId=${activeQuest.id}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
-        fetchQuests();
+    const deleteQuest = async () => {
+        questsEndpoint("DELETE", {}, activeQuest.id);
+        const newQuests = await questsEndpoint("GET");
+        setQuests(newQuests);
         setActiveQuest(null);
         setOpenDeleteDialog(false);
     };

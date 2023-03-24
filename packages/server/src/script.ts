@@ -1,6 +1,6 @@
 import express from 'express';
 const app = express();
-const port = 3001;
+const port = process?.env?.PORT || 3001;
 
 import { QuestStore } from './store/Quest';
 
@@ -13,26 +13,31 @@ store.addQuest({name: "Quest 1", description: "Description 1"});
 
 app.get('/quests', (req, res) => {
     console.log("quests called");
-    res.send(store.quests);
+    //simulate a delay
+    setTimeout(() => {
+        res.send(store.quests);
+    }, 2000);
     });
 
-app.post('/addQuest', (req, res) => {
+app.post('/quests', (req, res) => {
     const body = req.body;
-    console.log("addQuest called with body: ", body);
+    console.log("adding quest: ", body);
     store.addQuest(body);
     console.log("New Quest got Id: ", store.quests[store.quests.length - 1].id);
-    res.send(store.quests[store.quests.length - 1]);
+    setTimeout(() => {
+        res.send(store.quests[store.quests.length - 1]);
+    }, 2000);
     });
 
-app.post('/deleteQuest', (req, res) => {
-    const id = Number(req.query.questId);
+app.delete('/quests/:questId', (req, res) => {
+    const id = Number(req.params.questId);
     store.deleteQuest(id);
     console.log("Deleted quest: ", id);
     res.sendStatus(200);
     });
 
-app.post('/editQuest', (req, res) => {
-    const id = Number(req.body.id);
+app.put('/quests/:questId', (req, res) => {
+    const id = Number(req.params.questId);
     const newQuest = req.body;
     store.editQuest(id, newQuest);
     console.log("Edited quest: ", newQuest);

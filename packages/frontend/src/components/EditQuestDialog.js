@@ -35,7 +35,6 @@ function EditQuestDialog({  openEditDialog, setOpenEditDialog,
         try {
             questSchema.parse(newQuest);
             handleNewQuest(newQuest);
-            handleClose();
         } catch (error) {
             handleEmptyFieldsAlert();
             return;

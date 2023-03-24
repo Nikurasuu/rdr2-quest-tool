@@ -1,17 +1,12 @@
+let questIdIndex = 0;
+
 export class QuestStore {
     quests: any[] = [];
     activeQuest: { id: any; } = null;
 
     addQuest = (quest: { name: string; description: string; id?: any; }) => {
-        if (quest.id === undefined){
-            const lastId = this.quests[this.quests.length - 1]?.id;
-            if (lastId === undefined){
-                quest.id = 1;
-            }
-            else{
-                quest.id = lastId + 1;
-            }
-        }
+        questIdIndex++;
+        quest.id = questIdIndex;
         this.quests.push(quest);
     }
 
