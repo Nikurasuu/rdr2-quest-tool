@@ -8,18 +8,19 @@ import QuestList from "./QuestList";
 import QuestDetails from "./QuestDetails";
 import EditQuestDialog from "./EditQuestDialog";
 
-const server = "localhost:3001";
-//const server = process?.env?.QUESTS_ENDPOINT ||  "localhost:3001";
+const server = "localhost:3001/quests";
+//const server = process?.env?.QUESTS_ENDPOINT ||  "localhost:3001/quests";
 
 async function questsEndpoint(method, body, id) {
     if(id === undefined) id = "";
-    const response = await fetch(`http://${server}/quests/${id}`, {
+    const response = await fetch(`http://${server}/${id}`, {
         method: method,
         headers: {
             "Content-Type": "application/json",
         },
         body: JSON.stringify(body),
-    }).then((response) => response.json());
+    }).then((response) => response.json()).catch((error) => {
+        console.error("Error:", error)});
     return response;
 }
 
@@ -30,23 +31,14 @@ function QuestContainer() {
     const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
     const [openNotSelectedAlert, setOpenNotSelectedAlert] = React.useState(false);
     const [openEditDialog, setOpenEditDialog] = React.useState(false);
-
-    async function fetchQuests() {
-        try {
-            const data = await fetch(`http://localhost:3001/quests`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            }).then((response) => response.json())
-            setQuests(data);        
-        } catch (error) {
-            console.log(error);
-        }
-    }
+    const [isSaving, setIsSaving] = React.useState(false);
 
     useEffect(() => {
-        fetchQuests();
+        const getQuests = async () => {
+            const newQuests = await questsEndpoint("GET");
+            setQuests(newQuests);
+        };
+        getQuests();
     }, []);
 
     
@@ -92,6 +84,7 @@ function QuestContainer() {
         setQuests(newQuests);
         handleEditDialog();
         setActiveQuest(null);
+        setIsSaving(false);
     };
 
     const addQuest = () => {
@@ -105,11 +98,13 @@ function QuestContainer() {
     };
 
     const deleteQuest = async () => {
-        questsEndpoint("DELETE", {}, activeQuest.id);
+        setIsSaving(true);
+        await questsEndpoint("DELETE", {}, activeQuest.id);
         const newQuests = await questsEndpoint("GET");
         setQuests(newQuests);
         setActiveQuest(null);
         setOpenDeleteDialog(false);
+        setIsSaving(false);
     };
 
     return ( 
@@ -129,14 +124,14 @@ function QuestContainer() {
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={handleDeleteDialog}> Cancel </Button>
+                        <Button onClick={handleDeleteDialog} disabled={isSaving}> Cancel </Button>
                         <div data-testid='deleteQuestButton-1'>
-                            <Button onClick={deleteQuest}> Delete </Button>
+                            <Button onClick={deleteQuest} disabled={isSaving}> Delete </Button>
                         </div>
                     </DialogActions>
                 </Dialog>
             </div>
-            <EditQuestDialog openEditDialog={openEditDialog} setOpenEditDialog={setOpenEditDialog} activeQuest={activeQuest} setActiveQuest={setActiveQuest} handleNewQuest={handleNewQuest}/>
+            <EditQuestDialog openEditDialog={openEditDialog} setOpenEditDialog={setOpenEditDialog} activeQuest={activeQuest} setActiveQuest={setActiveQuest} handleNewQuest={handleNewQuest} isSaving={isSaving} setIsSaving={setIsSaving}/>
             <Grid container spacing={2} style={{height: '100%'}}>
                 <Grid item xs={12} sm={4}>
                     <Card className="QuestList">

@@ -20,16 +20,13 @@ export class QuestStore {
         }
     }
 
-    editQuest = (id: number, newQuest: { id: any; name?: string; description?: string; }) => {
-        this.quests = this.quests.map((quest) => {
-            if(quest.id !== id){
-                return quest;
-            }
-            return newQuest;
+    editQuest = (id: number, newQuest: { name: string; description: string; }) => {
+        const quest = this.quests.find((quest) => { 
+            return quest.id === id              
         });
-
-        if (this?.activeQuest?.id === newQuest.id) {
-            this.setActiveQuest(newQuest.id);
+        if (quest !== undefined){
+            quest.name = newQuest.name;
+            quest.description = newQuest.description;
         }
     }
 

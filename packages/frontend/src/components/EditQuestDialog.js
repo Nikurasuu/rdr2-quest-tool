@@ -10,11 +10,11 @@ const questSchema = z.object({
 
 function EditQuestDialog({  openEditDialog, setOpenEditDialog, 
                             activeQuest, setActiveQuest, 
-                            handleNewQuest }) {
+                            handleNewQuest,
+                            isSaving, setIsSaving }) {
 
-    const[name, setName] = React.useState(activeQuest === null ? '' : activeQuest.name);
-    const[description, setDescription] = React.useState(activeQuest === null ? '' : activeQuest.description);
-
+    const [name, setName] = React.useState(activeQuest === null ? '' : activeQuest.name);
+    const [description, setDescription] = React.useState(activeQuest === null ? '' : activeQuest.description);
     const [openEmptyFieldsAlert, setOpenEmptyFieldsAlert] = React.useState(false);
 
     const handleEmptyFieldsAlert = () => {
@@ -27,6 +27,7 @@ function EditQuestDialog({  openEditDialog, setOpenEditDialog,
     };
 
     const handleSave = () => {
+        setIsSaving(true);
         const newQuest = {
             id: activeQuest.id,
             name: name,
@@ -79,8 +80,8 @@ function EditQuestDialog({  openEditDialog, setOpenEditDialog,
                             />
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={handleClose}>Cancel</Button>
-                        <Button onClick={handleSave}>Save</Button>
+                        <Button onClick={handleClose} disabled={isSaving}>Cancel</Button>
+                        <Button onClick={handleSave} disabled={isSaving}>Save</Button>
                     </DialogActions>
                 </div>
             </Dialog>
