@@ -10,7 +10,8 @@ import EditQuestDialog from "./EditQuestDialog";
 
 import { Quest } from "./types";
 
-// const server = "localhost:3001/quests";
+// process has to be manually checked through this issue :
+// https://github.com/facebook/create-react-app/issues/12212
 const server =
   (!!window.process && window.process.env && window.process.env.QUESTS_ENDPOINT) || "localhost:3001/quests";
 
