@@ -2,6 +2,7 @@ import React from 'react';
 import {    Dialog, DialogTitle, DialogContent, DialogActions,
             TextField, Button, Snackbar     } from '@mui/material';
 import { z } from 'zod';
+import { Quest } from "./types";
 
 const questSchema = z.object({
     name: z.string().trim().min(1),
@@ -11,7 +12,15 @@ const questSchema = z.object({
 function EditQuestDialog({  openEditDialog, setOpenEditDialog, 
                             activeQuest, setActiveQuest, 
                             handleNewQuest,
-                            isSaving, setIsSaving }) {
+    isSaving, setIsSaving }: {
+        openEditDialog: boolean,
+        setOpenEditDialog: React.Dispatch<React.SetStateAction<boolean>>,
+        activeQuest: Quest | null,
+        setActiveQuest: React.Dispatch<React.SetStateAction<Quest | null>>,
+        handleNewQuest: (newQuest: Quest) => void,
+        isSaving: boolean,
+        setIsSaving: React.Dispatch<React.SetStateAction<boolean>>
+    }) {
 
     const [name, setName] = React.useState(activeQuest === null ? '' : activeQuest.name);
     const [description, setDescription] = React.useState(activeQuest === null ? '' : activeQuest.description);
@@ -29,7 +38,7 @@ function EditQuestDialog({  openEditDialog, setOpenEditDialog,
     const handleSave = () => {
         setIsSaving(true);
         const newQuest = {
-            id: activeQuest.id,
+            id: activeQuest?.id,
             name: name,
             description: description
         };

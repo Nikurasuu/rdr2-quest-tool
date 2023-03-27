@@ -1,10 +1,15 @@
+
 import express from 'express';
+import cors from 'cors';
+
 const app = express();
+
 const port = process?.env?.PORT || 3001;
 
 import { QuestStore } from './store/Quest';
 
 import bodyParser from 'body-parser';
+app.use(cors());
 app.use(bodyParser.json());
 
 const store = new QuestStore();

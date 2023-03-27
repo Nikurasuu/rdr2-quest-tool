@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import { Grid, Card, CssBaseline } from '@mui/material';
+import { Grid, Card, CssBaseline, PaletteMode } from '@mui/material';
 import { useTheme, ThemeProvider, createTheme } from '@mui/material';
 import NavBar from './components/NavBar';
 import QuestContainer from './components/QuestContainer';
@@ -37,7 +37,7 @@ function App() {
 }
 
 export default function ToggleColorMode() {
-  const [mode, setMode] = React.useState('light');
+  const [mode, setMode] = React.useState<PaletteMode>("light");
   const colorMode = React.useMemo(
     () => ({
       toggleColorMode: () => {

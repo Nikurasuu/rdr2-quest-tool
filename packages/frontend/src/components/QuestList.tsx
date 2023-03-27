@@ -1,5 +1,6 @@
 import React from "react";
 import { DataGrid } from "@mui/x-data-grid";
+import { Quest } from "./types";
 
 const columns = [
   { field: 'name', headerName: 'Quest Name', width: 400 },
@@ -7,8 +8,12 @@ const columns = [
   { field: 'location', headerName: 'Ort'}
 ];
 
-function QuestList({quests, onSelectHandler, activeQuest}) {
-  const selectionModel = activeQuest ? [activeQuest.id] : [];
+function QuestList({ quests, onSelectHandler, activeQuest }: {
+  quests: Quest[],
+  onSelectHandler: (quest: Quest) => void,
+  activeQuest: Quest | null
+}) {
+  const selectionModel = activeQuest ? ([activeQuest.id] as string[]) : [];
 
   return (
         <div data-testid='questList-1'>

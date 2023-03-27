@@ -8,26 +8,36 @@ import QuestList from "./QuestList";
 import QuestDetails from "./QuestDetails";
 import EditQuestDialog from "./EditQuestDialog";
 
-const server = "localhost:3001/quests";
-//const server = process?.env?.QUESTS_ENDPOINT ||  "localhost:3001/quests";
+import { Quest } from "./types";
 
-async function questsEndpoint(method, body, id) {
+// const server = "localhost:3001/quests";
+const server =
+  (!!window.process && window.process.env && window.process.env.QUESTS_ENDPOINT) || "localhost:3001/quests";
+
+async function questsEndpoint(method: string, body?: object, id?: string) {
     if(id === undefined) id = "";
-    const response = await fetch(`http://${server}/${id}`, {
-        method: method,
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-    }).then((response) => response.json()).catch((error) => {
-        console.error("Error:", error)});
-    return response;
+    try {
+
+        const response = await fetch(`http://${server}/${id}`, {
+            method: method,
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: body ? JSON.stringify(body) : undefined,
+        }).then((response) => response.json())
+
+        console.log(response)
+        return response;
+    } catch (error) {
+        console.error("Error:", error)
+        return null;
+    }
 }
 
 function QuestContainer() {
 
     const [quests, setQuests] = React.useState([]);
-    const [activeQuest, setActiveQuest] = React.useState(null);
+    const [activeQuest, setActiveQuest] = React.useState<Quest | null>(null);
     const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
     const [openNotSelectedAlert, setOpenNotSelectedAlert] = React.useState(false);
     const [openEditDialog, setOpenEditDialog] = React.useState(false);
@@ -36,7 +46,10 @@ function QuestContainer() {
     useEffect(() => {
         const getQuests = async () => {
             const newQuests = await questsEndpoint("GET");
-            setQuests(newQuests);
+            if (newQuests !== null) {
+                setQuests(newQuests);
+                
+            }
         };
         getQuests();
     }, []);
@@ -74,14 +87,16 @@ function QuestContainer() {
         return true;
     };
 
-    const handleNewQuest = async (newQuest) => {
+    const handleNewQuest = async (newQuest : Quest) => {
         if (newQuest.id === undefined) {
             await questsEndpoint("POST", newQuest);
         } else {
             await questsEndpoint("PUT", newQuest, newQuest.id);
         }
         const newQuests = await questsEndpoint("GET");
-        setQuests(newQuests);
+        if (newQuests !== null) {
+            setQuests(newQuests);
+        }
         handleEditDialog();
         setActiveQuest(null);
         setIsSaving(false);
@@ -99,9 +114,9 @@ function QuestContainer() {
 
     const deleteQuest = async () => {
         setIsSaving(true);
-        await questsEndpoint("DELETE", {}, activeQuest.id);
+        await questsEndpoint("DELETE", {}, activeQuest?.id);
         const newQuests = await questsEndpoint("GET");
-        setQuests(newQuests);
+        if (newQuests !== null) setQuests(newQuests);
         setActiveQuest(null);
         setOpenDeleteDialog(false);
         setIsSaving(false);
