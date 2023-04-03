@@ -1,0 +1,20 @@
+FROM node:18-alpine as base
+WORKDIR /code
+COPY package.json package-lock.json ./
+COPY /packages/server ./packages/server
+RUN npm install --production=true
+COPY /packages/server/ ./packages/server
+RUN npm run build --workspace=server
+
+FROM node:18-alpine
+WORKDIR /code
+COPY --from=base /code/packages/server/build ./packages/server/build
+COPY --from=base /code/node_modules ./node_modules
+
+EXPOSE 3001
+
+CMD [ "node", "packages/server/build/script.js" ]
+
+# build step definieren
+# build Ausgabe in dist
+# Opt: kleineres Node Image verwenden
