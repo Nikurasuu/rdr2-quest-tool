@@ -14,11 +14,9 @@ app.use(bodyParser.json());
 
 const store = new QuestStore();
 
-store.addQuest({name: "Quest 1", description: "Description 1"});
-
-app.get('/quests', (req, res) => {
+app.get('/quests', async (req, res) => {
     console.log("GET /quests");
-    res.send(store.quests);
+    res.send(await store.readQuests());
     });
 
 app.post('/quests', (req, res) => {
