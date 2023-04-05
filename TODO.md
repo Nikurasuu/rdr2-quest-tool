@@ -11,5 +11,5 @@
 - generate Swarmfile (compose with images instead of build context stuff) with Env Variable
   [example](https://gitlab.vier.ai/ux/portal-realm/host-app/-/blob/main/cicd/generate_swarm_config.sh)
     
-- (book swarm once)
+- (book swarm once [vra](https://vcloud-vra.vier.services/))
 - deploy to swarm
