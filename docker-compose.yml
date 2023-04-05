@@ -1,0 +1,39 @@
+version: '3.5'
+
+services:
+  app: 
+    build:
+      context: .
+      dockerfile: dockerfile.dev
+    ports:
+      - "3000:3000"
+    command: npm run frontend
+    working_dir: /usr/src/app
+    volumes:
+      - ./:/usr/src/app
+      - ./node_modules:/user/src/app/node_modules
+  
+  backend:
+    build:
+      context: .
+      dockerfile: dockerfile.dev
+    ports:
+      - "3001:3001"
+    command: npm run backend
+    working_dir: /usr/src/app
+    volumes:
+      - ./:/usr/src/app
+      - ./node_modules:/user/src/app/node_modules
+    depends_on:
+      - database
+    environment:
+      DATABASE_URL: postgres://rdr2db:rdr2password@db:5432/Quests
+
+  database:
+      image: "postgres" 
+      env_file:
+        - database.env 
+      ports:
+        - "5432:5432"
+      # volumes:
+      #   - ./:/var/lib/postgresql/data/ 

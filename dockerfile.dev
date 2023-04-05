@@ -1,0 +1,11 @@
+FROM node:18-buster-slim as base
+
+SHELL ["/bin/bash", "-c"]
+
+COPY . /code
+WORKDIR /code
+
+RUN apt-get update  -y \
+    && apt-get clean
+RUN apt-get install build-essential -y
+RUN apt-get install wget curl -y

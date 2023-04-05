@@ -14,7 +14,3 @@ COPY --from=base /code/node_modules ./node_modules
 EXPOSE 3001
 
 CMD [ "node", "packages/server/build/script.js" ]
-
-# build step definieren
-# build Ausgabe in dist
-# Opt: kleineres Node Image verwenden
