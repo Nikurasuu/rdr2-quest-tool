@@ -7,6 +7,10 @@ const pool = new Pool({
 });
 
 export class Database{
+    constructor() {
+        this.init();
+    }
+
     init = async () => {
         console.log("Initializing database");
         const client = await pool.connect();
@@ -20,29 +24,32 @@ export class Database{
         console.log("Database initialized");
         client.release();
     }
-
-    fetchAllQuests = async () => {
+    
+    fetch = async (select: string, from: string) => {
         const client = await pool.connect();
-        const result = await client.query('SELECT * FROM quests');
+        const result = await client.query(`SELECT ${select} FROM ${from}`);
         client.release();
         return result.rows;
     }
 
-    addQuest = async (quest: { name: string; description: string; }) => {
+    add = async (table: string, columns: string[], values: string[]) => {
         const client = await pool.connect();
-        await client.query('INSERT INTO quests (name, description) VALUES ($1, $2)', [quest.name, quest.description]);
+        const placeholders = values.map((values, index) => `$${index + 1}`);
+        const query = `INSERT INTO ${table} (${columns.join(', ')}) VALUES (${placeholders.join(', ')})`;
+        await client.query(query, values);
+        client.release();
+      }
+
+    delete = async (table: string, where: string) => {
+        const client = await pool.connect();
+        await client.query(`DELETE FROM ${table} WHERE ${where}`);
         client.release();
     }
 
-    deleteQuest = async (id: any) => {
+    edit = async (table: string, set: string, where: string) => {
         const client = await pool.connect();
-        await client.query('DELETE FROM quests WHERE id = $1', [id]);
+        const query = `UPDATE ${table} SET ${set} WHERE ${where}`;
+        await client.query(query);
         client.release();
-    }
-
-    editQuest = async (id: number, newQuest: { name: string; description: string; }) => {
-        const client = await pool.connect();
-        await client.query('UPDATE quests SET name = $1, description = $2 WHERE id = $3', [newQuest.name, newQuest.description, id]);
-        client.release();
-    }
+    } 
 } 

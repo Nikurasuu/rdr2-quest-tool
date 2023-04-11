@@ -47,6 +47,7 @@ function EditQuestDialog({  openEditDialog, setOpenEditDialog,
             handleNewQuest(newQuest);
         } catch (error) {
             handleEmptyFieldsAlert();
+            setIsSaving(false);
             return;
         }
     };

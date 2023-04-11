@@ -8,19 +8,24 @@ export class QuestStore {
     }
 
     readQuests = async () => {
-        const quests = await this.db.fetchAllQuests();
+        const quests = await this.db.fetch('*', 'quests');
         return quests;
     }
 
     addQuest = (quest: { name: string; description: string; id?: any; }) => {
-        this.db.addQuest(quest);
+        const colums = ['name', 'description'];
+        let values = [quest.name, quest.description];
+        this.db.add('quests', colums, values);
     }
 
     deleteQuest = (id: any) => {
-        this.db.deleteQuest(id);
+        const where = `id = ${id}`;
+        this.db.delete('quests', where);
     }
 
     editQuest = (id: number, newQuest: { name: string; description: string; }) => {
-        this.db.editQuest(id, newQuest);
+        const set = `name = '${newQuest.name}', description = '${newQuest.description}'`;
+        const where = `id = ${id}`;
+        this.db.edit('quests', set, where);
     }
 }

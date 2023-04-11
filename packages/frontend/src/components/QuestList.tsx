@@ -3,9 +3,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import { Quest } from "./types";
 
 const columns = [
-  { field: 'name', headerName: 'Quest Name', width: 400 },
-  { field: 'type', headerName: 'Typ'},
-  { field: 'location', headerName: 'Ort'}
+  { field: 'name', headerName: 'Quest Name', width : 400 },
 ];
 
 function QuestList({ quests, onSelectHandler, activeQuest }: {
