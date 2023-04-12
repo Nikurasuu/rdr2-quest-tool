@@ -3,6 +3,7 @@ WORKDIR /code
 COPY package.json package-lock.json ./
 COPY /packages/server ./packages/server
 RUN npm install --production=true
+RUN npm install @types/pg --save-dev
 COPY /packages/server/ ./packages/server
 RUN npm run build --workspace=server
 
