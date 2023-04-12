@@ -1,10 +1,16 @@
 import { Database } from "../database";
 
 export class QuestStore {
-    db = new Database();
-    
-    constructor() {
-        this.db.init();
+    db: Database;
+
+    constructor(db?: Database) {
+        if (db) {
+            this.db = db;
+            this.db.init();
+        } else {
+            this.db = new Database();
+            this.db.init();
+        }
     }
 
     readQuests = async () => {
