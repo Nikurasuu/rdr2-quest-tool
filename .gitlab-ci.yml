@@ -1,0 +1,10 @@
+image: docker:dind
+
+stages:
+  - build
+
+build-server:
+    stage: build
+    script:
+        - docker build -f dockerfile.server .
+
