@@ -13,5 +13,3 @@
     
 - (book swarm once [vra](https://vcloud-vra.vier.services/))
 - deploy to swarm
-
-(test)
