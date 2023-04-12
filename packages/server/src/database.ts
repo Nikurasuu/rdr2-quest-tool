@@ -7,9 +7,6 @@ const pool = new Pool({
 });
 
 export class Database{
-    constructor() {
-        this.init();
-    }
 
     init = async () => {
         console.log("Initializing database");

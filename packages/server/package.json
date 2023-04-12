@@ -23,6 +23,7 @@
   "scripts": {
     "build": "tsc",
     "start": "ts-node src/script.ts",
+    "test-with-coverage": "jest --coverage",
     "test": "jest"
   },
   "version": "1.0.0"
