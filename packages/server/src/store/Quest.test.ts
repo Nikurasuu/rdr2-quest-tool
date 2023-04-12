@@ -1,61 +1,98 @@
 import { QuestStore } from "./Quest";
 
 describe('Quest Store', () => {
-    const db = {
-        init: jest.fn(),
-        fetch: jest.fn(),
-        add: jest.fn(),
-        delete: jest.fn(),
-        edit: jest.fn()
-    };
-
-    beforeEach(() => {
-        jest.clearAllMocks();
-    });
-
-    test ('Initial Store', () => {  
-        const store = new QuestStore(db);
-        expect(db.init).toBeCalledTimes(1);
-    });
-
-    test('Read Quests', async () => {
-        const store = new QuestStore(db);
-        const quests = [{id: 1, name: 'dummyName', description: 'dummyDescription'}]; 
-        db.fetch.mockResolvedValue(quests); 
-        const result = await store.readQuests();
-        expect(db.fetch).toBeCalledTimes(1);
-        expect(db.fetch).toBeCalledWith('*', 'quests');
-        expect(result).toEqual(quests);
+    test('Initial Store', () => {
+        const store = new QuestStore();
+        expect(store.quests).toEqual([]);
     });
 
     test('Add Quest', () => {
-        const store = new QuestStore(db);
-        const quest = {id: 1, name: 'dummyName', description: 'dummyDescription'}
+        const store = new QuestStore();
+        const quest = {name: 'dummyName', description: 'dummyDescription'}
         store.addQuest(quest);
-        expect(db.add).toBeCalledTimes(1);
-        expect(db.add).toBeCalledWith('quests', ['name', 'description'], ['dummyName', 'dummyDescription']);
+        expect(store.quests).toEqual([quest]);
     });
 
-    test('Delete Quest', () => {
-        const store = new QuestStore(db);
+    test('Delete Quest-1', () => {
+        const store = new QuestStore();
         const quest = {id: 1, name: 'dummyName', description: 'dummyDescription'}
         store.addQuest(quest);
-        expect(db.add).toBeCalledTimes(1);
-        expect(db.add).toBeCalledWith('quests', ['name', 'description'], ['dummyName', 'dummyDescription']);
+        expect(store.quests).toEqual([quest]);
         store.deleteQuest(1);
-        expect(db.delete).toBeCalledTimes(1);
-        expect(db.delete).toBeCalledWith('quests', 'id = 1');
+        expect(store.quests).toEqual([]);
+    });
+
+    test('Delete Quest-2', () => {
+        const store = new QuestStore();
+        const quest = {id: 1, name: 'dummyName', description: 'dummyDescription'}
+        store.addQuest(quest);
+        expect(store.quests).toEqual([quest]);
+        store.deleteQuest(2);
+        expect(store.quests).toEqual([quest]);
     });
 
     test('Edit Quest-1', () => {
-        const store = new QuestStore(db);
+        const store = new QuestStore();
         const quest = {id: 1, name: 'dummyName', description: 'dummyDescription'}
         const newQuest = {id: 1, name: 'dummyName2', description: 'dummyDescription2'}
         store.addQuest(quest);
-        expect(db.add).toBeCalledTimes(1);
-        expect(db.add).toBeCalledWith('quests', ['name', 'description'], ['dummyName', 'dummyDescription']);
+        expect(store.quests).toEqual([quest]);
         store.editQuest(1, newQuest);
-        expect(db.edit).toBeCalledTimes(1);
-        expect(db.edit).toBeCalledWith('quests', `name = 'dummyName2', description = 'dummyDescription2'`, 'id = 1');
+        expect(store.quests).toEqual([newQuest])
     });
+
+    test('Edit Quest-2', () => {
+        const store = new QuestStore();
+        const quest = {id: 1, name: 'dummyName', description: 'dummyDescription'}
+        const newQuest = {id: 1, name: 'dummyName2', description: 'dummyDescription2'}
+        store.addQuest(quest);
+        expect(store.quests).toEqual([quest]);
+        store.editQuest(2, newQuest);
+        expect(store.quests).toEqual([quest])
+    });
+
+    test('Active Quest', () => {
+        const store = new QuestStore();
+        const quest = {id: 1, name: 'dummyName', description: 'dummyDescription'}
+        store.addQuest(quest);
+        expect(store.quests).toEqual([quest]);
+        expect(store.activeQuest).toEqual(null);
+        store.setActiveQuest(1);
+        expect(store.activeQuest).toEqual(quest);
+    });
+
+    test('Active Quest-2', () => {
+        const store = new QuestStore();
+        const quest = {id: 1, name: 'dummyName', description: 'dummyDescription'}
+        store.addQuest(quest);
+        expect(store.quests).toEqual([quest]);
+        expect(store.activeQuest).toEqual(null);
+        store.setActiveQuest(2);
+        expect(store.activeQuest).toEqual(null);
+    });
+
+    test('Edit active Quest', () => {
+        const store = new QuestStore();
+        const quest = {id: 1, name: 'dummyName', description: 'dummyDescription'}
+        const newQuest = {id: 1, name: 'dummyName2', description: 'dummyDescription2'}
+        store.addQuest(quest);
+        expect(store.quests).toEqual([quest]);
+        expect(store.activeQuest).toEqual(null);
+        store.setActiveQuest(1);
+        expect(store.activeQuest).toEqual(quest);
+        store.editQuest(1, newQuest);
+        expect(store.activeQuest).toEqual(newQuest);
+    });
+
+    test('Delete Active Quest', () => {
+        const store = new QuestStore();
+        const quest = {id: 1, name: 'dummyName', description: 'dummyDescription'}
+        store.addQuest(quest);
+        expect(store.quests).toEqual([quest]);
+        expect(store.activeQuest).toEqual(null);
+        store.setActiveQuest(1);
+        expect(store.activeQuest).toEqual(quest);
+        store.deleteQuest(1);
+        expect(store.activeQuest).toEqual(null);
+    })
 });
