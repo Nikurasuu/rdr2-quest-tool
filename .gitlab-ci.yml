@@ -8,3 +8,8 @@ build-server:
     script:
         - docker build -f dockerfile.server .
 
+build-frontend:
+    stage: build
+    script:
+        - docker build -f dockerfile .
+
