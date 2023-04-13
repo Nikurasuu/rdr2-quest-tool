@@ -1,22 +1,18 @@
 image: docker:dind
 
 stages:
-  - build
-  - publish
+  - build-and-push
 
 build-server:
-    stage: build
+    stage: build-and-push
     script:
         - docker build -f dockerfile.server . --tag=$DOCKER_REGISTRY/$DOCKER_USERSPACE/quest-backend
-
-build-frontend:
-    stage: build
-    script:
-        - docker build -f dockerfile . --tag=$DOCKER_REGISTRY/$DOCKER_USERSPACE/quest-server
-
-publish:
-    stage: publish
-    script:
         - docker login -u $DOCKER_USER -p $DOCKER_PW $DOCKER_REGISTRY
         - docker push $DOCKER_REGISTRY/$DOCKER_USERSPACE/quest-backend
+
+build-frontend:
+    stage: build-and-push
+    script:
+        - docker build -f dockerfile . --tag=$DOCKER_REGISTRY/$DOCKER_USERSPACE/quest-server
+        - docker login -u $DOCKER_USER -p $DOCKER_PW $DOCKER_REGISTRY
         - docker push $DOCKER_REGISTRY/$DOCKER_USERSPACE/quest-server
