@@ -6,10 +6,10 @@ stages:
 build-server:
     stage: build
     script:
-        - docker build -f dockerfile.server .
+        - docker build -f dockerfile.server . --tag=quest-server
 
 build-frontend:
     stage: build
     script:
-        - docker build -f dockerfile .
+        - docker build -f dockerfile . --tag=quest-frontend
 
