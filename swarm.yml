@@ -1,0 +1,31 @@
+version: '3.5'
+
+networks:
+  external:
+    external: true
+  internal:
+    external: true
+
+services:
+  app: 
+    image: "$DOCKER_REGISTRY/$DOCKER_USERSPACE/quest-frontend"
+    networks:
+      - internal
+      - external
+    ports:
+      - 3000:80
+  
+  backend:
+    image: "$DOCKER_REGISTRY/$DOCKER_USERSPACE/quest-backend"
+    networks:
+      - internal
+      - external
+    ports:
+      - 3001:3001
+
+  database:
+      image: "postgres"
+      networks:
+      - internal
+      env_file:
+        - database.env

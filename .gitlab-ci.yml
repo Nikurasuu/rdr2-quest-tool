@@ -2,6 +2,7 @@ image: docker:dind
 
 stages:
   - build-and-push
+  - deploy-to-swarm
 
 build-server:
     stage: build-and-push
@@ -16,3 +17,8 @@ build-frontend:
         - docker build -f dockerfile . --tag=$DOCKER_REGISTRY/$DOCKER_USERSPACE/quest-server
         - docker login -u $DOCKER_USER -p $DOCKER_PW $DOCKER_REGISTRY
         - docker push $DOCKER_REGISTRY/$DOCKER_USERSPACE/quest-server
+
+deploy:
+    stage: deploy-to-swarm
+    script:
+        - docker login -u $DOCKER_USER -p $DOCKER_PW $DOCKER_REGISTRY
