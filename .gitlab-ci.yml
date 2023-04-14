@@ -2,7 +2,7 @@ image: docker:dind
 
 stages:
   - build-and-push
-  - deploy-to-swarm
+  - deploy
 
 build-server:
     stage: build-and-push
