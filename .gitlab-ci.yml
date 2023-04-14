@@ -19,6 +19,17 @@ build-frontend:
         - docker push $DOCKER_REGISTRY/$DOCKER_USERSPACE/quest-frontend
 
 deploy:
-    stage: deploy-to-swarm
+    stage: deploy
     script:
-        - docker login -u $DOCKER_USER -p $DOCKER_PW $DOCKER_REGISTRY
+      - "command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )"
+      - eval $(ssh-agent -s)
+      - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+      - mkdir -p ~/.ssh
+      - chmod 700 ~/.ssh
+      - echo "$ALL_SSH_KNOWN_HOSTS" >> ~/.ssh/known_hosts
+      - chmod 644 ~/.ssh/known_hosts
+      - ssh $SSH_USER@$TARGET_HOST docker login $DOCKER_REGISTRY -u $DOCKER_USER -p $DOCKER_PW
+      - ssh $SSH_USER@$TARGET_HOST "docker network create -d overlay external" || echo "External Network already there, skipping!" 
+      - ssh $SSH_USER@$TARGET_HOST "docker network create -d overlay --internal internal" || echo "Internal Network already there, skipping!" 
+      - ssh $SSH_USER@$TARGET_HOST "docker stack rm rdr2quest" || echo "Docker stack not there, skipping!" 
+      - ssh $SSH_USER@$TARGET_HOST "docker stack deploy --resolve-image always --with-registry-auth rdr2quest -c swarm.yml"
