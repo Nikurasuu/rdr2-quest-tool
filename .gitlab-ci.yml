@@ -2,7 +2,7 @@ image: docker:dind
 
 stages:
   - build-and-push
-  - deploy
+  - deploy-to-swarm
 
 build-server:
     stage: build-and-push
@@ -32,4 +32,5 @@ deploy:
         - ssh $SSH_USER@$TARGET_HOST "docker network create -d overlay external" || echo "External Network already there, skipping!" 
         - ssh $SSH_USER@$TARGET_HOST "docker network create -d overlay --internal internal" || echo "Internal Network already there, skipping!" 
         - ssh $SSH_USER@$TARGET_HOST "docker stack rm rdr2quest" || echo "Docker stack not there, skipping!" 
+        - wget https://gitlab.vier.ai/niklas.malkusch/rdr2questv2/-/raw/master/swarm.yml                              
         - ssh $SSH_USER@$TARGET_HOST "docker stack deploy --resolve-image always --with-registry-auth rdr2quest -c swarm.yml"
