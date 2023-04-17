@@ -26,6 +26,8 @@ services:
   database:
       image: "postgres"
       networks:
-      - internal
-      env_file:
-        - database.env
+        - internal
+      environment:
+        - POSTGRES_USER=postgres
+        - POSTGRES_PASSWORD=postgres
+        - POSTGRES_DB=Quests
