@@ -19,7 +19,7 @@ build-frontend:
         - docker push $DOCKER_REGISTRY/$DOCKER_USERSPACE/quest-frontend
 
 deploy:
-    stage: deploy
+    stage: deploy-to-swarm
     script:
         - ping -c 3 $TARGET_HOST
         - "command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )"
