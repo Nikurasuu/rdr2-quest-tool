@@ -38,4 +38,4 @@ deploy:
         - ssh $SSH_USER@$TARGET_HOST "echo $DOCKER_REGISTRY"
         - ssh $SSH_USER@$TARGET_HOST "export DOCKER_USERSPACE=rnd_user_experience"
         - ssh $SSH_USER@$TARGET_HOST "echo $DOCKER_USERSPACE"
-        - ssh $SSH_USER@$TARGET_HOST "docker stack deploy rdr2quest -c swarm.yml"
+        - ssh $SSH_USER@$TARGET_HOST "DOCKER_REGISTRY=harbor-p01.vier.services DOCKER_USERSPACE=rnd_user_experience docker stack deploy --resolve-image always --with-registry-auth rdr2quest -c swarm.yml"
