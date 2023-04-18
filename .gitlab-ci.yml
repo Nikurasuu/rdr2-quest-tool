@@ -21,7 +21,6 @@ build-frontend:
 deploy:
     stage: deploy-to-swarm
     script:
-        - ping -c 3 $TARGET_HOST
         - "command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )"
         - eval $(ssh-agent -s)
         - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
@@ -34,8 +33,4 @@ deploy:
         - ssh $SSH_USER@$TARGET_HOST "docker network create -d overlay --internal internal" || echo "Internal Network already there, skipping!" 
         - ssh $SSH_USER@$TARGET_HOST "docker stack rm rdr2quest" || echo "Docker stack not there, skipping!" 
         - scp swarm.yml $SSH_USER@$TARGET_HOST:swarm.yml
-        - ssh $SSH_USER@$TARGET_HOST "export DOCKER_REGISTRY=harbor-p01.vier.services"
-        - ssh $SSH_USER@$TARGET_HOST "echo $DOCKER_REGISTRY"
-        - ssh $SSH_USER@$TARGET_HOST "export DOCKER_USERSPACE=rnd_user_experience"
-        - ssh $SSH_USER@$TARGET_HOST "echo $DOCKER_USERSPACE"
-        - ssh $SSH_USER@$TARGET_HOST "DOCKER_REGISTRY=harbor-p01.vier.services DOCKER_USERSPACE=rnd_user_experience docker stack deploy --resolve-image always --with-registry-auth rdr2quest -c swarm.yml"
+        - ssh $SSH_USER@$TARGET_HOST "DOCKER_REGISTRY=$DOCKER_REGISTRY DOCKER_USERSPACE=$DOCKER_USERSPACE docker stack deploy --resolve-image always --with-registry-auth rdr2quest -c swarm.yml"
