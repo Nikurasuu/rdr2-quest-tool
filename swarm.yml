@@ -13,7 +13,7 @@ services:
       - internal
       - external
     ports:
-      - 3000:80
+      - 80:80
   
   backend:
     image: "$DOCKER_REGISTRY/$DOCKER_USERSPACE/quest-server"
@@ -21,7 +21,7 @@ services:
       - internal
       - external
     ports:
-      - 3001:3001
+      - 8080:8080
 
   database:
       image: "postgres"

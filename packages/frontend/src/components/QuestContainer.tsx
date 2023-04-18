@@ -13,7 +13,7 @@ import { Quest } from "./types";
 // process has to be manually checked through this issue :
 // https://github.com/facebook/create-react-app/issues/12212
 const server =
-  (!!window.process && window.process.env && window.process.env.QUESTS_ENDPOINT) || "localhost:3001/quests";
+  (!!window.process && window.process.env && window.process.env.QUESTS_ENDPOINT) || "localhost:8080/quests";
 
 async function questsEndpoint(method: string, body?: object, id?: string) {
     if(id === undefined) id = "";
