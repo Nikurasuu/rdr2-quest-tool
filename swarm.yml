@@ -16,7 +16,7 @@ services:
       - 3000:80
   
   backend:
-    image: "$DOCKER_REGISTRY/$DOCKER_USERSPACE/quest-backend"
+    image: "$DOCKER_REGISTRY/$DOCKER_USERSPACE/quest-server"
     networks:
       - internal
       - external
