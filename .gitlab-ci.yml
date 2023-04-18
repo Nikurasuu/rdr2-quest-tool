@@ -35,5 +35,7 @@ deploy:
         - ssh $SSH_USER@$TARGET_HOST "docker stack rm rdr2quest" || echo "Docker stack not there, skipping!" 
         - scp swarm.yml $SSH_USER@$TARGET_HOST:swarm.yml
         - ssh $SSH_USER@$TARGET_HOST "export DOCKER_REGISTRY=harbor-p01.vier.services"
+        - ssh $SSH_USER@$TARGET_HOST "echo $DOCKER_REGISTRY"
         - ssh $SSH_USER@$TARGET_HOST "export DOCKER_USERSPACE=rnd_user_experience"
+        - ssh $SSH_USER@$TARGET_HOST "echo $DOCKER_USERSPACE"
         - ssh $SSH_USER@$TARGET_HOST "docker stack deploy --resolve-image always --with-registry-auth rdr2quest -c swarm.yml"

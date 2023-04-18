@@ -1,7 +1,7 @@
 # CI Pipeline
 
-- build Docker Image for Server
-- build Docker Image for Frontend
+- build Docker Image for Server Check
+- build Docker Image for Frontend Check
    [example](https://gitlab.vier.ai/ux/portal-realm/utility/gitlab-ci-template/-/blob/main/.gitlab-ci.template.yml)
    [example](https://gitlab.vier.ai/iam/utilities/gitlab-ci-templates)
    [example](https://gitlab.vier.ai/TobiasGraf/ci-templates)
